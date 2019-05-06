@@ -1,0 +1,33 @@
+{
+  "name": "cpu-features",
+  "version": "0.0.0",
+  "author": "Brian White <mscdex@mscdex.net>",
+  "description": "A simple binding to Google's cpu_features library for obtaining information about installed CPU(s)",
+  "main": "./lib/index",
+  "dependencies": {
+    "nan": "^2.13.2"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild",
+    "test": "node test/test.js"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "keywords": [
+    "cpu",
+    "detect",
+    "detection",
+    "features"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/mscdex/cpu-features/raw/master/LICENSE"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mscdex/cpu-features.git"
+  }
+}
