@@ -47,7 +47,7 @@ Nan::Set(ret, Nan::New<String>(key).ToLocalChecked(), Nan::New<Boolean>(true))
 
 #define SET_STR(key, val)                                                      \
 Nan::Set(ret,                                                                  \
-         Nan::New<String>(key).ToLocalChecked(),                              \
+         Nan::New<String>(key).ToLocalChecked(),                               \
          Nan::New<String>(trim(val)).ToLocalChecked())
 
 #define SET_NUM(key, val)                                                      \
