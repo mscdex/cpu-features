@@ -37,14 +37,24 @@ Example
   //   stepping: 9,
   //   uarch: 'INTEL_IVB',
   //   flags:
-  //    { aes: true,
+  //    { fpu: true,
+  //      tsc: true,
+  //      cx8: true,
+  //      clfsh: true,
+  //      mmx: true,
+  //      aes: true,
   //      erms: true,
   //      f16c: true,
+  //      sse: true,
+  //      sse2: true,
+  //      sse3: true,
   //      ssse3: true,
   //      sse4_1: true,
   //      sse4_2: true,
   //      avx: true,
+  //      pclmulqdq: true,
   //      cx16: true,
   //      popcnt: true,
-  //      rdrnd: true } }
+  //      rdrnd: true,
+  //      ss: true } }
 ```
