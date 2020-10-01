@@ -43,12 +43,13 @@
                   'variables': { 'cmake_arch': 'x64' },
                 }],
               ],
-              'action': [ 'cd <(module_root_dir)/deps/cpu_features/build && cmake -DCMAKE_BUILD_TYPE=Release -A <(cmake_arch) ..' ],
+              'action': [ 'cd <(module_root_dir)/deps/cpu_features/build && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PIC=ON -A <(cmake_arch) ..' ],
             }, { # POSIX
               'outputs': [ '<(module_root_dir)/deps/cpu_features/build/Makefile' ],
               'action': [
                 'cmake',
                 '-DCMAKE_BUILD_TYPE=Release',
+                '-DBUILD_PIC=ON',
                 '-B<(module_root_dir)/deps/cpu_features/build',
                 '-H<(module_root_dir)/deps/cpu_features',
               ],

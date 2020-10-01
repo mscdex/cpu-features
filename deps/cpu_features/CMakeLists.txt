@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(CpuFeatures VERSION 0.1.0)
+# option() honors normal variables.
+# see: https://cmake.org/cmake/help/git-stage/policy/CMP0077.html
+if(POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
+endif()
+
+project(CpuFeatures VERSION 0.5.0 LANGUAGES C)
+
+set(CMAKE_C_STANDARD 99)
 
 # Default Build Type to be Release
 if(NOT CMAKE_BUILD_TYPE)
@@ -14,12 +22,18 @@ endif(NOT CMAKE_BUILD_TYPE)
 option(BUILD_TESTING "Enable test (depends on googletest)." OFF)
 # BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to make
 # it prominent in the GUI.
-# cpu_features uses bit-fields which are - to some extends - implementation-defined (see https://en.cppreference.com/w/c/language/bit_field). 
-# As a consequence it is discouraged to use cpu_features as a shared library because different compilers may interpret the code in different ways. 
+# cpu_features uses bit-fields which are - to some extends - implementation-defined (see https://en.cppreference.com/w/c/language/bit_field).
+# As a consequence it is discouraged to use cpu_features as a shared library because different compilers may interpret the code in different ways.
 # Prefer static linking from source whenever possible.
 option(BUILD_SHARED_LIBS "Build library as shared." OFF)
 # PIC
 option(BUILD_PIC "Build with Position Independant Code." OFF) # Default is off at least for GCC
+
+# Force PIC on unix when building shared libs
+# see: https://en.wikipedia.org/wiki/Position-independent_code
+if(BUILD_SHARED_LIBS AND UNIX)
+  set(BUILD_PIC ON)
+endif()
 
 include(CheckIncludeFile)
 include(CheckSymbolExists)
@@ -47,7 +61,7 @@ elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^arm")
   set(PROCESSOR_IS_ARM TRUE)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^aarch64")
   set(PROCESSOR_IS_AARCH64 TRUE)
-elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64)|(AMD64)|(^i.86$)")
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64)|(AMD64|amd64)|(^i.86$)")
   set(PROCESSOR_IS_X86 TRUE)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   set(PROCESSOR_IS_POWER TRUE)
@@ -55,6 +69,7 @@ endif()
 
 macro(add_cpu_features_headers_and_sources HDRS_LIST_NAME SRCS_LIST_NAME)
   list(APPEND ${HDRS_LIST_NAME} ${PROJECT_SOURCE_DIR}/include/cpu_features_macros.h)
+  list(APPEND ${HDRS_LIST_NAME} ${PROJECT_SOURCE_DIR}/include/cpu_features_cache_info.h)
   if(PROCESSOR_IS_MIPS)
       list(APPEND ${HDRS_LIST_NAME} ${PROJECT_SOURCE_DIR}/include/cpuinfo_mips.h)
       list(APPEND ${SRCS_LIST_NAME} ${PROJECT_SOURCE_DIR}/src/cpuinfo_mips.c)
@@ -89,6 +104,7 @@ add_library(utils OBJECT
   ${PROJECT_SOURCE_DIR}/src/stack_line_reader.c
   ${PROJECT_SOURCE_DIR}/src/string_view.c
 )
+set_property(TARGET utils PROPERTY POSITION_INDEPENDENT_CODE ${BUILD_PIC})
 setup_include_and_definitions(utils)
 
 #
@@ -132,6 +148,15 @@ set_property(TARGET cpu_features PROPERTY POSITION_INDEPENDENT_CODE ${BUILD_PIC}
 target_include_directories(cpu_features
   PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/cpu_features>
 )
+add_library(CpuFeature::cpu_features ALIAS cpu_features)
+
+#
+# program : list_cpu_features
+#
+
+add_executable(list_cpu_features ${PROJECT_SOURCE_DIR}/src/utils/list_cpu_features.c)
+target_link_libraries(list_cpu_features PRIVATE cpu_features)
+add_executable(CpuFeature::list_cpu_features ALIAS list_cpu_features)
 
 #
 # ndk_compat
@@ -149,6 +174,12 @@ include(CTest)
 if(BUILD_TESTING)
   # Automatically incorporate googletest into the CMake Project if target not
   # found.
+  enable_language(CXX)
+
+  set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF) # prefer use of -std11 instead of -gnustd11
+
   if(NOT TARGET gtest OR NOT TARGET gmock_main)
     # Download and unpack googletest at configure time.
     configure_file(
@@ -189,11 +220,11 @@ if(BUILD_TESTING)
 endif()
 
 #
-# Install cpu_features
+# Install cpu_features and list_cpu_features
 #
 
 include(GNUInstallDirs)
-install(TARGETS cpu_features
+install(TARGETS cpu_features list_cpu_features
   EXPORT CpuFeaturesTargets
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/cpu_features
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

@@ -12,25 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CPU_FEATURES_INCLUDE_INTERNAL_CPUID_X86_H_
-#define CPU_FEATURES_INCLUDE_INTERNAL_CPUID_X86_H_
+#ifndef CPU_FEATURES_TEST_HWCAPS_FOR_TESTING_H_
+#define CPU_FEATURES_TEST_HWCAPS_FOR_TESTING_H_
 
-#include <stdint.h>
+#include "internal/hwcaps.h"
 
-#include "cpu_features_macros.h"
+namespace cpu_features {
 
-CPU_FEATURES_START_CPP_NAMESPACE
+void SetHardwareCapabilities(uint32_t hwcaps, uint32_t hwcaps2);
+void SetPlatformTypes(const char *platform, const char *base_platform);
 
-// A struct to hold the result of a call to cpuid.
-typedef struct {
-  uint32_t eax, ebx, ecx, edx;
-} Leaf;
+}  // namespace cpu_features
 
-Leaf CpuIdEx(uint32_t leaf_id, int ecx);
-
-// Returns the eax value of the XCR0 register.
-uint32_t GetXCR0Eax(void);
-
-CPU_FEATURES_END_CPP_NAMESPACE
-
-#endif  // CPU_FEATURES_INCLUDE_INTERNAL_CPUID_X86_H_
+#endif  // CPU_FEATURES_TEST_HWCAPS_FOR_TESTING_H_
