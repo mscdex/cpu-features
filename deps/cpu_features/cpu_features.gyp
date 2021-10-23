@@ -55,6 +55,12 @@
             'src/cpuinfo_ppc.c',
           ],
         }],
+
+        ['OS=="mac" and target_arch in "ia32 x32 x64"', {
+          'defines': [
+            'HAVE_SYSCTLBYNAME=1',
+          ],
+        }],
       ],
       'defines': [
         'STACK_LINE_READER_BUFFER_SIZE=1024',
