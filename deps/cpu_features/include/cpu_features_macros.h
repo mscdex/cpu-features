@@ -1,4 +1,4 @@
-// Copyright 2017 Google Inc.
+// Copyright 2017 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -77,6 +77,14 @@
 
 #if (defined(_WIN64) || defined(_WIN32))
 #define CPU_FEATURES_OS_WINDOWS
+#endif
+
+#if (defined(__apple__) || defined(__APPLE__) || defined(__MACH__))
+#define CPU_FEATURES_OS_DARWIN
+#endif
+
+#if (defined(__freebsd__) || defined(__FreeBSD__))
+#define CPU_FEATURES_OS_FREEBSD
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -208,5 +216,18 @@
 #define CPU_FEATURES_COMPILED_MIPS_MSA 0
 #endif  //  defined(__mips_msa)
 #endif  //  defined(CPU_FEATURES_ARCH_MIPS)
+
+////////////////////////////////////////////////////////////////////////////////
+// Utils
+////////////////////////////////////////////////////////////////////////////////
+
+// Communicates to the compiler that the block is unreachable
+#if defined(CPU_FEATURES_COMPILER_CLANG) || defined(CPU_FEATURES_COMPILER_GCC)
+#define UNREACHABLE() __builtin_unreachable()
+#elif defined(CPU_FEATURES_COMPILER_MSC)
+#define UNREACHABLE() __assume(0)
+#else
+#define UNREACHABLE()
+#endif
 
 #endif  // CPU_FEATURES_INCLUDE_CPU_FEATURES_MACROS_H_

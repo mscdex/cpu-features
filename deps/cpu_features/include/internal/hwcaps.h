@@ -1,4 +1,4 @@
-// Copyright 2017 Google Inc.
+// Copyright 2017 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #ifndef CPU_FEATURES_INCLUDE_INTERNAL_HWCAPS_H_
 #define CPU_FEATURES_INCLUDE_INTERNAL_HWCAPS_H_
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "cpu_features_macros.h"
@@ -78,6 +79,7 @@ CPU_FEATURES_START_CPP_NAMESPACE
 #define AARCH64_HWCAP2_DGH (1UL << 15)
 #define AARCH64_HWCAP2_RNG (1UL << 16)
 #define AARCH64_HWCAP2_BTI (1UL << 17)
+#define AARCH64_HWCAP2_MTE (1UL << 18)
 
 // http://elixir.free-electrons.com/linux/latest/source/arch/arm/include/uapi/asm/hwcap.h
 #define ARM_HWCAP_SWP (1UL << 0)
@@ -169,14 +171,19 @@ typedef struct {
   unsigned long hwcaps2;
 } HardwareCapabilities;
 
+// Retrieves values from auxiliary vector for types AT_HWCAP and AT_HWCAP2.
+// First tries to call getauxval(), if not available falls back to reading
+// "/proc/self/auxv".
 HardwareCapabilities CpuFeatures_GetHardwareCapabilities(void);
 
-typedef struct {
-  char platform[64];       // 0 terminated string
-  char base_platform[64];  // 0 terminated string
-} PlatformType;
+// Checks whether value for AT_HWCAP (or AT_HWCAP2) match hwcaps_mask.
+bool CpuFeatures_IsHwCapsSet(const HardwareCapabilities hwcaps_mask,
+                             const HardwareCapabilities hwcaps);
 
-PlatformType CpuFeatures_GetPlatformType(void);
+// Get pointer for the AT_PLATFORM type.
+const char* CpuFeatures_GetPlatformPointer(void);
+// Get pointer for the AT_BASE_PLATFORM type.
+const char* CpuFeatures_GetBasePlatformPointer(void);
 
 CPU_FEATURES_END_CPP_NAMESPACE
 

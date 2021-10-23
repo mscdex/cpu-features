@@ -1,4 +1,4 @@
-// Copyright 2017 Google Inc.
+// Copyright 2017 Google LLC
 // Copyright 2020 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,93 @@
 #error "Cannot compile cpuinfo_x86 on a non x86 platform."
 #endif
 
+// Generation of feature's getters/setters functions and kGetters, kSetters,
+// kCpuInfoFlags global tables.
+#define DEFINE_TABLE_FEATURES                                                  \
+  FEATURE(X86_FPU, fpu, "fpu", 0, 0)                                           \
+  FEATURE(X86_TSC, tsc, "tsc", 0, 0)                                           \
+  FEATURE(X86_CX8, cx8, "cx8", 0, 0)                                           \
+  FEATURE(X86_CLFSH, clfsh, "clfsh", 0, 0)                                     \
+  FEATURE(X86_MMX, mmx, "mmx", 0, 0)                                           \
+  FEATURE(X86_AES, aes, "aes", 0, 0)                                           \
+  FEATURE(X86_ERMS, erms, "erms", 0, 0)                                        \
+  FEATURE(X86_F16C, f16c, "f16c", 0, 0)                                        \
+  FEATURE(X86_FMA4, fma4, "fma4", 0, 0)                                        \
+  FEATURE(X86_FMA3, fma3, "fma3", 0, 0)                                        \
+  FEATURE(X86_VAES, vaes, "vaes", 0, 0)                                        \
+  FEATURE(X86_VPCLMULQDQ, vpclmulqdq, "vpclmulqdq", 0, 0)                      \
+  FEATURE(X86_BMI1, bmi1, "bmi1", 0, 0)                                        \
+  FEATURE(X86_HLE, hle, "hle", 0, 0)                                           \
+  FEATURE(X86_BMI2, bmi2, "bmi2", 0, 0)                                        \
+  FEATURE(X86_RTM, rtm, "rtm", 0, 0)                                           \
+  FEATURE(X86_RDSEED, rdseed, "rdseed", 0, 0)                                  \
+  FEATURE(X86_CLFLUSHOPT, clflushopt, "clflushopt", 0, 0)                      \
+  FEATURE(X86_CLWB, clwb, "clwb", 0, 0)                                        \
+  FEATURE(X86_SSE, sse, "sse", 0, 0)                                           \
+  FEATURE(X86_SSE2, sse2, "sse2", 0, 0)                                        \
+  FEATURE(X86_SSE3, sse3, "sse3", 0, 0)                                        \
+  FEATURE(X86_SSSE3, ssse3, "ssse3", 0, 0)                                     \
+  FEATURE(X86_SSE4_1, sse4_1, "sse4_1", 0, 0)                                  \
+  FEATURE(X86_SSE4_2, sse4_2, "sse4_2", 0, 0)                                  \
+  FEATURE(X86_SSE4A, sse4a, "sse4a", 0, 0)                                     \
+  FEATURE(X86_AVX, avx, "avx", 0, 0)                                           \
+  FEATURE(X86_AVX2, avx2, "avx2", 0, 0)                                        \
+  FEATURE(X86_AVX512F, avx512f, "avx512f", 0, 0)                               \
+  FEATURE(X86_AVX512CD, avx512cd, "avx512cd", 0, 0)                            \
+  FEATURE(X86_AVX512ER, avx512er, "avx512er", 0, 0)                            \
+  FEATURE(X86_AVX512PF, avx512pf, "avx512pf", 0, 0)                            \
+  FEATURE(X86_AVX512BW, avx512bw, "avx512bw", 0, 0)                            \
+  FEATURE(X86_AVX512DQ, avx512dq, "avx512dq", 0, 0)                            \
+  FEATURE(X86_AVX512VL, avx512vl, "avx512vl", 0, 0)                            \
+  FEATURE(X86_AVX512IFMA, avx512ifma, "avx512ifma", 0, 0)                      \
+  FEATURE(X86_AVX512VBMI, avx512vbmi, "avx512vbmi", 0, 0)                      \
+  FEATURE(X86_AVX512VBMI2, avx512vbmi2, "avx512vbmi2", 0, 0)                   \
+  FEATURE(X86_AVX512VNNI, avx512vnni, "avx512vnni", 0, 0)                      \
+  FEATURE(X86_AVX512BITALG, avx512bitalg, "avx512bitalg", 0, 0)                \
+  FEATURE(X86_AVX512VPOPCNTDQ, avx512vpopcntdq, "avx512vpopcntdq", 0, 0)       \
+  FEATURE(X86_AVX512_4VNNIW, avx512_4vnniw, "avx512_4vnniw", 0, 0)             \
+  FEATURE(X86_AVX512_4VBMI2, avx512_4vbmi2, "avx512_4vbmi2", 0, 0)             \
+  FEATURE(X86_AVX512_SECOND_FMA, avx512_second_fma, "avx512_second_fma", 0, 0) \
+  FEATURE(X86_AVX512_4FMAPS, avx512_4fmaps, "avx512_4fmaps", 0, 0)             \
+  FEATURE(X86_AVX512_BF16, avx512_bf16, "avx512_bf16", 0, 0)                   \
+  FEATURE(X86_AVX512_VP2INTERSECT, avx512_vp2intersect, "avx512_vp2intersect", \
+          0, 0)                                                                \
+  FEATURE(X86_AMX_BF16, amx_bf16, "amx_bf16", 0, 0)                            \
+  FEATURE(X86_AMX_TILE, amx_tile, "amx_tile", 0, 0)                            \
+  FEATURE(X86_AMX_INT8, amx_int8, "amx_int8", 0, 0)                            \
+  FEATURE(X86_PCLMULQDQ, pclmulqdq, "pclmulqdq", 0, 0)                         \
+  FEATURE(X86_SMX, smx, "smx", 0, 0)                                           \
+  FEATURE(X86_SGX, sgx, "sgx", 0, 0)                                           \
+  FEATURE(X86_CX16, cx16, "cx16", 0, 0)                                        \
+  FEATURE(X86_SHA, sha, "sha", 0, 0)                                           \
+  FEATURE(X86_POPCNT, popcnt, "popcnt", 0, 0)                                  \
+  FEATURE(X86_MOVBE, movbe, "movbe", 0, 0)                                     \
+  FEATURE(X86_RDRND, rdrnd, "rdrnd", 0, 0)                                     \
+  FEATURE(X86_DCA, dca, "dca", 0, 0)                                           \
+  FEATURE(X86_SS, ss, "ss", 0, 0)                                              \
+  FEATURE(X86_ADX, adx, "adx", 0, 0)
+#define DEFINE_TABLE_FEATURE_TYPE X86Features
+#define DEFINE_TABLE_DONT_GENERATE_HWCAPS
+#include "define_tables.h"
+
+// The following includes are necessary to provide SSE detections on pre-AVX
+// microarchitectures.
+#if defined(CPU_FEATURES_OS_WINDOWS)
+#include <windows.h>  // IsProcessorFeaturePresent
+#elif defined(CPU_FEATURES_OS_LINUX_OR_ANDROID) || \
+    defined(CPU_FEATURES_OS_FREEBSD)
+#include "internal/filesystem.h"         // Needed to parse /proc/cpuinfo
+#include "internal/stack_line_reader.h"  // Needed to parse /proc/cpuinfo
+#include "internal/string_view.h"        // Needed to parse /proc/cpuinfo
+#elif defined(CPU_FEATURES_OS_DARWIN)
+#if !defined(HAVE_SYSCTLBYNAME)
+#error "Darwin needs support for sysctlbyname"
+#endif
+#include <sys/sysctl.h>
+#else
+#error "Unsupported OS"
+#endif  // CPU_FEATURES_OS
+
 ////////////////////////////////////////////////////////////////////////////////
 // Definitions for CpuId and GetXCR0Eax.
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +122,7 @@
 
 #include <cpuid.h>
 
-Leaf CpuIdEx(uint32_t leaf_id, int ecx) {
+Leaf GetCpuidLeaf(uint32_t leaf_id, int ecx) {
   Leaf leaf;
   __cpuid_count(leaf_id, ecx, leaf.eax, leaf.ebx, leaf.ecx, leaf.edx);
   return leaf;
@@ -55,7 +142,7 @@ uint32_t GetXCR0Eax(void) {
 #include <immintrin.h>
 #include <intrin.h>  // For __cpuidex()
 
-Leaf CpuIdEx(uint32_t leaf_id, int ecx) {
+Leaf GetCpuidLeaf(uint32_t leaf_id, int ecx) {
   Leaf leaf;
   int data[4];
   __cpuidex(data, leaf_id, ecx);
@@ -72,13 +159,13 @@ uint32_t GetXCR0Eax(void) { return (uint32_t)_xgetbv(0); }
 #error "Unsupported compiler, x86 cpuid requires either GCC, Clang or MSVC."
 #endif
 
-static Leaf CpuId(uint32_t leaf_id) { return CpuIdEx(leaf_id, 0); }
+static Leaf CpuId(uint32_t leaf_id) { return GetCpuidLeaf(leaf_id, 0); }
 
 static const Leaf kEmptyLeaf;
 
 static Leaf SafeCpuIdEx(uint32_t max_cpuid_leaf, uint32_t leaf_id, int ecx) {
   if (leaf_id <= max_cpuid_leaf) {
-    return CpuIdEx(leaf_id, ecx);
+    return GetCpuidLeaf(leaf_id, ecx);
   } else {
     return kEmptyLeaf;
   }
@@ -167,6 +254,10 @@ static int IsVendor(const Leaf leaf, const char* const name) {
   const uint32_t edx = *(const uint32_t*)(name + 4);
   const uint32_t ecx = *(const uint32_t*)(name + 8);
   return leaf.ebx == ebx && leaf.ecx == ecx && leaf.edx == edx;
+}
+
+static int IsVendorByX86Info(const X86Info* info, const char* const name) {
+  return memcmp(info->vendor, name, sizeof(info->vendor)) == 0;
 }
 
 static const CacheLevelInfo kEmptyCacheLevelInfo;
@@ -1029,79 +1120,100 @@ static CacheLevelInfo GetCacheLevelInfo(const uint32_t reg) {
   }
 }
 
-static void GetByteArrayFromRegister(uint32_t result[4], const uint32_t reg) {
-  for (int i = 0; i < 4; ++i) {
-    result[i] = ExtractBitRange(reg, (i + 1) * 8, i * 8);
-  }
-}
-
+// From https://www.felixcloutier.com/x86/cpuid#tbl-3-12
 static void ParseLeaf2(const int max_cpuid_leaf, CacheInfo* info) {
   Leaf leaf = SafeCpuId(max_cpuid_leaf, 2);
-  uint32_t registers[] = {leaf.eax, leaf.ebx, leaf.ecx, leaf.edx};
-  for (int i = 0; i < 4; ++i) {
-    if (registers[i] & (1U << 31)) {
-      continue;  // register does not contains valid information
-    }
-    uint32_t bytes[4];
-    GetByteArrayFromRegister(bytes, registers[i]);
-    for (int j = 0; j < 4; ++j) {
-      if (bytes[j] == 0xFF)
-        break;  // leaf 4 should be used to fetch cache information
-      info->levels[info->size] = GetCacheLevelInfo(bytes[j]);
-    }
+  // The least-significant byte in register EAX (register AL) will always return
+  // 01H. Software should ignore this value and not interpret it as an
+  // informational descriptor.
+  leaf.eax &= 0xFFFFFF00;  // Zeroing out AL. 0 is the empty descriptor.
+  // The most significant bit (bit 31) of each register indicates whether the
+  // register contains valid information (set to 0) or is reserved (set to 1).
+  if (IsBitSet(leaf.eax, 31)) leaf.eax = 0;
+  if (IsBitSet(leaf.ebx, 31)) leaf.ebx = 0;
+  if (IsBitSet(leaf.ecx, 31)) leaf.ecx = 0;
+  if (IsBitSet(leaf.edx, 31)) leaf.edx = 0;
+
+  uint8_t data[16];
+#if __STDC_VERSION__ >= 201112L
+  _Static_assert(sizeof(Leaf) == sizeof(data), "Leaf must be 16 bytes");
+#endif
+  memcpy(&data, &leaf, sizeof(data));
+  for (size_t i = 0; i < sizeof(data); ++i) {
+    const uint8_t descriptor = data[i];
+    if (descriptor == 0) continue;
+    info->levels[info->size] = GetCacheLevelInfo(descriptor);
     info->size++;
   }
 }
 
-static void ParseLeaf4(const int max_cpuid_leaf, CacheInfo* info) {
-  info->size = 0;
+// For newer Intel CPUs uses "CPUID, eax=0x00000004".
+// For newer AMD CPUs uses "CPUID, eax=0x8000001D"
+static void ParseCacheInfo(const int max_cpuid_leaf, uint32_t leaf_id,
+                           CacheInfo* info) {
   for (int cache_id = 0; cache_id < CPU_FEATURES_MAX_CACHE_LEVEL; cache_id++) {
-    const Leaf leaf = SafeCpuIdEx(max_cpuid_leaf, 4, cache_id);
+    const Leaf leaf = SafeCpuIdEx(max_cpuid_leaf, leaf_id, cache_id);
     CacheType cache_type = ExtractBitRange(leaf.eax, 4, 0);
-    if (cache_type == CPU_FEATURE_CACHE_NULL) {
-      info->levels[cache_id] = kEmptyCacheLevelInfo;
-      continue;
-    }
+    if (cache_type == CPU_FEATURE_CACHE_NULL) continue;
     int level = ExtractBitRange(leaf.eax, 7, 5);
     int line_size = ExtractBitRange(leaf.ebx, 11, 0) + 1;
     int partitioning = ExtractBitRange(leaf.ebx, 21, 12) + 1;
     int ways = ExtractBitRange(leaf.ebx, 31, 22) + 1;
     int tlb_entries = leaf.ecx + 1;
     int cache_size = (ways * partitioning * line_size * (tlb_entries));
-    info->levels[cache_id] = (CacheLevelInfo){.level = level,
-                                              .cache_type = cache_type,
-                                              .cache_size = cache_size,
-                                              .ways = ways,
-                                              .line_size = line_size,
-                                              .tlb_entries = tlb_entries,
-                                              .partitioning = partitioning};
+    info->levels[info->size] = (CacheLevelInfo){.level = level,
+                                                .cache_type = cache_type,
+                                                .cache_size = cache_size,
+                                                .ways = ways,
+                                                .line_size = line_size,
+                                                .tlb_entries = tlb_entries,
+                                                .partitioning = partitioning};
     info->size++;
   }
 }
 
+#if defined(CPU_FEATURES_OS_DARWIN)
+#if defined(CPU_FEATURES_MOCK_CPUID_X86)
+extern bool GetDarwinSysCtlByName(const char*);
+#else  // CPU_FEATURES_MOCK_CPUID_X86
+static bool GetDarwinSysCtlByName(const char* name) {
+  int enabled;
+  size_t enabled_len = sizeof(enabled);
+  const int failure = sysctlbyname(name, &enabled, &enabled_len, NULL, 0);
+  return failure ? false : enabled;
+}
+#endif
+#endif  // CPU_FEATURES_OS_DARWIN
+
 // Internal structure to hold the OS support for vector operations.
 // Avoid to recompute them since each call to cpuid is ~100 cycles.
 typedef struct {
-  bool have_sse;
-  bool have_avx;
-  bool have_avx512;
-  bool have_amx;
-} OsSupport;
+  bool sse_registers;
+  bool avx_registers;
+  bool avx512_registers;
+  bool amx_registers;
+} OsPreserves;
+
+#if defined(CPU_FEATURES_OS_WINDOWS)
+#if defined(CPU_FEATURES_MOCK_CPUID_X86)
+extern bool GetWindowsIsProcessorFeaturePresent(DWORD);
+#else  // CPU_FEATURES_MOCK_CPUID_X86
+static bool GetWindowsIsProcessorFeaturePresent(DWORD ProcessorFeature) {
+  return IsProcessorFeaturePresent(ProcessorFeature);
+}
+#endif
+#endif  // CPU_FEATURES_OS_WINDOWS
 
 // Reference https://en.wikipedia.org/wiki/CPUID.
 static void ParseCpuId(const uint32_t max_cpuid_leaf, X86Info* info,
-                       OsSupport* os_support) {
+                       OsPreserves* os_preserves) {
   const Leaf leaf_1 = SafeCpuId(max_cpuid_leaf, 1);
   const Leaf leaf_7 = SafeCpuId(max_cpuid_leaf, 7);
   const Leaf leaf_7_1 = SafeCpuIdEx(max_cpuid_leaf, 7, 1);
 
   const bool have_xsave = IsBitSet(leaf_1.ecx, 26);
   const bool have_osxsave = IsBitSet(leaf_1.ecx, 27);
-  const uint32_t xcr0_eax = (have_xsave && have_osxsave) ? GetXCR0Eax() : 0;
-  os_support->have_sse = HasXmmOsXSave(xcr0_eax);
-  os_support->have_avx = HasYmmOsXSave(xcr0_eax);
-  os_support->have_avx512 = HasZmmOsXSave(xcr0_eax);
-  os_support->have_amx = HasTmmOsXSave(xcr0_eax);
+  const bool have_xcr0 = have_xsave && have_osxsave;
 
   const uint32_t family = ExtractBitRange(leaf_1.eax, 11, 8);
   const uint32_t extended_family = ExtractBitRange(leaf_1.eax, 27, 20);
@@ -1141,86 +1253,198 @@ static void ParseCpuId(const uint32_t max_cpuid_leaf, X86Info* info,
   features->sha = IsBitSet(leaf_7.ebx, 29);
   features->vaes = IsBitSet(leaf_7.ecx, 9);
   features->vpclmulqdq = IsBitSet(leaf_7.ecx, 10);
+  features->adx = IsBitSet(leaf_7.ebx, 19);
 
-  if (os_support->have_sse) {
-    features->sse = IsBitSet(leaf_1.edx, 25);
-    features->sse2 = IsBitSet(leaf_1.edx, 26);
-    features->sse3 = IsBitSet(leaf_1.ecx, 0);
-    features->ssse3 = IsBitSet(leaf_1.ecx, 9);
-    features->sse4_1 = IsBitSet(leaf_1.ecx, 19);
-    features->sse4_2 = IsBitSet(leaf_1.ecx, 20);
-  }
+  /////////////////////////////////////////////////////////////////////////////
+  // The following section is devoted to Vector Extensions.
+  /////////////////////////////////////////////////////////////////////////////
 
-  if (os_support->have_avx) {
-    features->fma3 = IsBitSet(leaf_1.ecx, 12);
-    features->avx = IsBitSet(leaf_1.ecx, 28);
-    features->avx2 = IsBitSet(leaf_7.ebx, 5);
-  }
+  // CPU with AVX expose XCR0 which enables checking vector extensions OS
+  // support through cpuid.
+  if (have_xcr0) {
+    // Here we rely exclusively on cpuid for both CPU and OS support of vector
+    // extensions.
+    const uint32_t xcr0_eax = GetXCR0Eax();
+    os_preserves->sse_registers = HasXmmOsXSave(xcr0_eax);
+    os_preserves->avx_registers = HasYmmOsXSave(xcr0_eax);
+#if defined(CPU_FEATURES_OS_DARWIN)
+    // On Darwin AVX512 support is On-demand.
+    // We have to query the OS instead of querying the Zmm save/restore state.
+    // https://github.com/apple/darwin-xnu/blob/8f02f2a044b9bb1ad951987ef5bab20ec9486310/osfmk/i386/fpu.c#L173-L199
+    os_preserves->avx512_registers =
+        GetDarwinSysCtlByName("hw.optional.avx512f");
+#else
+    os_preserves->avx512_registers = HasZmmOsXSave(xcr0_eax);
+#endif  // CPU_FEATURES_OS_DARWIN
+    os_preserves->amx_registers = HasTmmOsXSave(xcr0_eax);
 
-  if (os_support->have_avx512) {
-    features->avx512f = IsBitSet(leaf_7.ebx, 16);
-    features->avx512cd = IsBitSet(leaf_7.ebx, 28);
-    features->avx512er = IsBitSet(leaf_7.ebx, 27);
-    features->avx512pf = IsBitSet(leaf_7.ebx, 26);
-    features->avx512bw = IsBitSet(leaf_7.ebx, 30);
-    features->avx512dq = IsBitSet(leaf_7.ebx, 17);
-    features->avx512vl = IsBitSet(leaf_7.ebx, 31);
-    features->avx512ifma = IsBitSet(leaf_7.ebx, 21);
-    features->avx512vbmi = IsBitSet(leaf_7.ecx, 1);
-    features->avx512vbmi2 = IsBitSet(leaf_7.ecx, 6);
-    features->avx512vnni = IsBitSet(leaf_7.ecx, 11);
-    features->avx512bitalg = IsBitSet(leaf_7.ecx, 12);
-    features->avx512vpopcntdq = IsBitSet(leaf_7.ecx, 14);
-    features->avx512_4vnniw = IsBitSet(leaf_7.edx, 2);
-    features->avx512_4vbmi2 = IsBitSet(leaf_7.edx, 3);
-    features->avx512_second_fma = HasSecondFMA(info->model);
-    features->avx512_4fmaps = IsBitSet(leaf_7.edx, 3);
-    features->avx512_bf16 = IsBitSet(leaf_7_1.eax, 5);
-    features->avx512_vp2intersect = IsBitSet(leaf_7.edx, 8);
-  }
-
-  if (os_support->have_amx) {
-    features->amx_bf16 = IsBitSet(leaf_7.edx, 22);
-    features->amx_tile = IsBitSet(leaf_7.edx, 24);
-    features->amx_int8 = IsBitSet(leaf_7.edx, 25);
+    if (os_preserves->sse_registers) {
+      features->sse = IsBitSet(leaf_1.edx, 25);
+      features->sse2 = IsBitSet(leaf_1.edx, 26);
+      features->sse3 = IsBitSet(leaf_1.ecx, 0);
+      features->ssse3 = IsBitSet(leaf_1.ecx, 9);
+      features->sse4_1 = IsBitSet(leaf_1.ecx, 19);
+      features->sse4_2 = IsBitSet(leaf_1.ecx, 20);
+    }
+    if (os_preserves->avx_registers) {
+      features->fma3 = IsBitSet(leaf_1.ecx, 12);
+      features->avx = IsBitSet(leaf_1.ecx, 28);
+      features->avx2 = IsBitSet(leaf_7.ebx, 5);
+    }
+    if (os_preserves->avx512_registers) {
+      features->avx512f = IsBitSet(leaf_7.ebx, 16);
+      features->avx512cd = IsBitSet(leaf_7.ebx, 28);
+      features->avx512er = IsBitSet(leaf_7.ebx, 27);
+      features->avx512pf = IsBitSet(leaf_7.ebx, 26);
+      features->avx512bw = IsBitSet(leaf_7.ebx, 30);
+      features->avx512dq = IsBitSet(leaf_7.ebx, 17);
+      features->avx512vl = IsBitSet(leaf_7.ebx, 31);
+      features->avx512ifma = IsBitSet(leaf_7.ebx, 21);
+      features->avx512vbmi = IsBitSet(leaf_7.ecx, 1);
+      features->avx512vbmi2 = IsBitSet(leaf_7.ecx, 6);
+      features->avx512vnni = IsBitSet(leaf_7.ecx, 11);
+      features->avx512bitalg = IsBitSet(leaf_7.ecx, 12);
+      features->avx512vpopcntdq = IsBitSet(leaf_7.ecx, 14);
+      features->avx512_4vnniw = IsBitSet(leaf_7.edx, 2);
+      features->avx512_4vbmi2 = IsBitSet(leaf_7.edx, 3);
+      features->avx512_second_fma = HasSecondFMA(info->model);
+      features->avx512_4fmaps = IsBitSet(leaf_7.edx, 3);
+      features->avx512_bf16 = IsBitSet(leaf_7_1.eax, 5);
+      features->avx512_vp2intersect = IsBitSet(leaf_7.edx, 8);
+    }
+    if (os_preserves->amx_registers) {
+      features->amx_bf16 = IsBitSet(leaf_7.edx, 22);
+      features->amx_tile = IsBitSet(leaf_7.edx, 24);
+      features->amx_int8 = IsBitSet(leaf_7.edx, 25);
+    }
+  } else {
+    // When XCR0 is not available (Atom based or older cpus) we need to defer to
+    // the OS via custom code.
+#if defined(CPU_FEATURES_OS_WINDOWS)
+    // Handling Windows platform through IsProcessorFeaturePresent.
+    // https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-isprocessorfeaturepresent
+    features->sse =
+        GetWindowsIsProcessorFeaturePresent(PF_XMMI_INSTRUCTIONS_AVAILABLE);
+    features->sse2 =
+        GetWindowsIsProcessorFeaturePresent(PF_XMMI64_INSTRUCTIONS_AVAILABLE);
+    features->sse3 =
+        GetWindowsIsProcessorFeaturePresent(PF_SSE3_INSTRUCTIONS_AVAILABLE);
+#elif defined(CPU_FEATURES_OS_DARWIN)
+    // Handling Darwin platform through sysctlbyname.
+    features->sse = GetDarwinSysCtlByName("hw.optional.sse");
+    features->sse2 = GetDarwinSysCtlByName("hw.optional.sse2");
+    features->sse3 = GetDarwinSysCtlByName("hw.optional.sse3");
+    features->ssse3 = GetDarwinSysCtlByName("hw.optional.supplementalsse3");
+    features->sse4_1 = GetDarwinSysCtlByName("hw.optional.sse4_1");
+    features->sse4_2 = GetDarwinSysCtlByName("hw.optional.sse4_2");
+#elif defined(CPU_FEATURES_OS_FREEBSD)
+    // Handling FreeBSD platform through parsing /var/run/dmesg.boot.
+    const int fd = CpuFeatures_OpenFile("/var/run/dmesg.boot");
+    if (fd >= 0) {
+      StackLineReader reader;
+      StackLineReader_Initialize(&reader, fd);
+      for (bool stop = false; !stop;) {
+        const LineResult result = StackLineReader_NextLine(&reader);
+        if (result.eof) stop = true;
+        const StringView line = result.line;
+        if (!CpuFeatures_StringView_StartsWith(line, str("  Features")))
+          continue;
+        // Lines of interests are of the following form:
+        // "  Features=0x1783fbff<PSE36,MMX,FXSR,SSE,SSE2,HTT>"
+        // We first extract the comma separated values between angle brackets.
+        StringView csv = result.line;
+        int index = CpuFeatures_StringView_IndexOfChar(csv, '<');
+        if (index >= 0) csv = CpuFeatures_StringView_PopFront(csv, index + 1);
+        if (csv.size > 0 && CpuFeatures_StringView_Back(csv) == '>')
+          csv = CpuFeatures_StringView_PopBack(csv, 1);
+        if (CpuFeatures_StringView_HasWord(csv, "SSE", ','))
+          features->sse = true;
+        if (CpuFeatures_StringView_HasWord(csv, "SSE2", ','))
+          features->sse2 = true;
+        if (CpuFeatures_StringView_HasWord(csv, "SSE3", ','))
+          features->sse3 = true;
+        if (CpuFeatures_StringView_HasWord(csv, "SSSE3", ','))
+          features->ssse3 = true;
+        if (CpuFeatures_StringView_HasWord(csv, "SSE4.1", ','))
+          features->sse4_1 = true;
+        if (CpuFeatures_StringView_HasWord(csv, "SSE4.2", ','))
+          features->sse4_2 = true;
+      }
+      CpuFeatures_CloseFile(fd);
+    }
+#elif defined(CPU_FEATURES_OS_LINUX_OR_ANDROID)
+    // Handling Linux platform through /proc/cpuinfo.
+    const int fd = CpuFeatures_OpenFile("/proc/cpuinfo");
+    if (fd >= 0) {
+      StackLineReader reader;
+      StackLineReader_Initialize(&reader, fd);
+      for (bool stop = false; !stop;) {
+        const LineResult result = StackLineReader_NextLine(&reader);
+        if (result.eof) stop = true;
+        const StringView line = result.line;
+        StringView key, value;
+        if (!CpuFeatures_StringView_GetAttributeKeyValue(line, &key, &value))
+          continue;
+        if (!CpuFeatures_StringView_IsEquals(key, str("flags"))) continue;
+        features->sse = CpuFeatures_StringView_HasWord(value, "sse", ' ');
+        features->sse2 = CpuFeatures_StringView_HasWord(value, "sse2", ' ');
+        features->sse3 = CpuFeatures_StringView_HasWord(value, "sse3", ' ');
+        features->ssse3 = CpuFeatures_StringView_HasWord(value, "ssse3", ' ');
+        features->sse4_1 = CpuFeatures_StringView_HasWord(value, "sse4_1", ' ');
+        features->sse4_2 = CpuFeatures_StringView_HasWord(value, "sse4_2", ' ');
+        break;
+      }
+      CpuFeatures_CloseFile(fd);
+    }
+#else
+#error "Unsupported fallback detection of SSE OS support."
+#endif
+    // Now that we have queried the OS for SSE support, we report this back to
+    // os_preserves. This is needed in case of AMD CPU's to enable testing of
+    // sse4a (See ParseExtraAMDCpuId below).
+    if (features->sse) os_preserves->sse_registers = true;
   }
 }
 
 // Reference
 // https://en.wikipedia.org/wiki/CPUID#EAX=80000000h:_Get_Highest_Extended_Function_Implemented.
-static void ParseExtraAMDCpuId(X86Info* info, OsSupport os_support) {
-  const Leaf leaf_80000000 = CpuId(0x80000000);
-  const uint32_t max_extended_cpuid_leaf = leaf_80000000.eax;
-  const Leaf leaf_80000001 = SafeCpuId(max_extended_cpuid_leaf, 0x80000001);
+static Leaf GetLeafByIdAMD(uint32_t leaf_id) {
+  uint32_t max_extended = CpuId(0x80000000).eax;
+  return SafeCpuId(max_extended, leaf_id);
+}
+
+static void ParseExtraAMDCpuId(X86Info* info, OsPreserves os_preserves) {
+  const Leaf leaf_80000001 = GetLeafByIdAMD(0x80000001);
 
   X86Features* const features = &info->features;
 
-  if (os_support.have_sse) {
+  if (os_preserves.sse_registers) {
     features->sse4a = IsBitSet(leaf_80000001.ecx, 6);
   }
 
-  if (os_support.have_avx) {
+  if (os_preserves.avx_registers) {
     features->fma4 = IsBitSet(leaf_80000001.ecx, 16);
   }
 }
 
 static const X86Info kEmptyX86Info;
-static const OsSupport kEmptyOsSupport;
 static const CacheInfo kEmptyCacheInfo;
+static const OsPreserves kEmptyOsPreserves;
 
 X86Info GetX86Info(void) {
   X86Info info = kEmptyX86Info;
-  OsSupport os_support = kEmptyOsSupport;
   const Leaf leaf_0 = CpuId(0);
-  const bool is_intel = IsVendor(leaf_0, "GenuineIntel");
-  const bool is_amd = IsVendor(leaf_0, "AuthenticAMD");
+  const bool is_intel = IsVendor(leaf_0, CPU_FEATURES_VENDOR_GENUINE_INTEL);
+  const bool is_amd = IsVendor(leaf_0, CPU_FEATURES_VENDOR_AUTHENTIC_AMD);
+  const bool is_hygon = IsVendor(leaf_0, CPU_FEATURES_VENDOR_HYGON_GENUINE);
   SetVendor(leaf_0, info.vendor);
-  if (is_intel || is_amd) {
+  if (is_intel || is_amd || is_hygon) {
+    OsPreserves os_preserves = kEmptyOsPreserves;
     const uint32_t max_cpuid_leaf = leaf_0.eax;
-    ParseCpuId(max_cpuid_leaf, &info, &os_support);
-  }
-  if (is_amd) {
-    ParseExtraAMDCpuId(&info, os_support);
+    ParseCpuId(max_cpuid_leaf, &info, &os_preserves);
+    if (is_amd || is_hygon) {
+      ParseExtraAMDCpuId(&info, os_preserves);
+    }
   }
   return info;
 }
@@ -1228,10 +1452,21 @@ X86Info GetX86Info(void) {
 CacheInfo GetX86CacheInfo(void) {
   CacheInfo info = kEmptyCacheInfo;
   const Leaf leaf_0 = CpuId(0);
-  const uint32_t max_cpuid_leaf = leaf_0.eax;
-  if (IsVendor(leaf_0, "GenuineIntel")) {
-    ParseLeaf2(max_cpuid_leaf, &info);
-    ParseLeaf4(max_cpuid_leaf, &info);
+  if (IsVendor(leaf_0, CPU_FEATURES_VENDOR_GENUINE_INTEL)) {
+    info.size = 0;
+    ParseLeaf2(leaf_0.eax, &info);
+    ParseCacheInfo(leaf_0.eax, 4, &info);
+  } else if (IsVendor(leaf_0, CPU_FEATURES_VENDOR_AUTHENTIC_AMD) ||
+             IsVendor(leaf_0, CPU_FEATURES_VENDOR_HYGON_GENUINE)) {
+    const uint32_t max_ext = CpuId(0x80000000).eax;
+    const uint32_t cpuid_ext = SafeCpuId(max_ext, 0x80000001).ecx;
+
+    // If CPUID Fn8000_0001_ECX[TopologyExtensions]==0
+    // then CPUID Fn8000_0001_E[D,C,B,A]X is reserved.
+    // https://www.amd.com/system/files/TechDocs/25481.pdf
+    if (IsBitSet(cpuid_ext, 22)) {
+      ParseCacheInfo(max_ext, 0x8000001D, &info);
+    }
   }
   return info;
 }
@@ -1239,10 +1474,12 @@ CacheInfo GetX86CacheInfo(void) {
 #define CPUID(FAMILY, MODEL) ((((FAMILY)&0xFF) << 8) | ((MODEL)&0xFF))
 
 X86Microarchitecture GetX86Microarchitecture(const X86Info* info) {
-  if (memcmp(info->vendor, "GenuineIntel", sizeof(info->vendor)) == 0) {
+  if (IsVendorByX86Info(info, CPU_FEATURES_VENDOR_GENUINE_INTEL)) {
     switch (CPUID(info->family, info->model)) {
+      case CPUID(0x06, 0x1C):  // Intel(R) Atom(TM) CPU 230 @ 1.60GHz
       case CPUID(0x06, 0x35):
       case CPUID(0x06, 0x36):
+      case CPUID(0x06, 0x70):  // https://en.wikichip.org/wiki/intel/atom/230
         // https://en.wikipedia.org/wiki/Bonnell_(microarchitecture)
         return INTEL_ATOM_BNL;
       case CPUID(0x06, 0x37):
@@ -1336,43 +1573,137 @@ X86Microarchitecture GetX86Microarchitecture(const X86Info* info) {
         return X86_UNKNOWN;
     }
   }
-  if (memcmp(info->vendor, "AuthenticAMD", sizeof(info->vendor)) == 0) {
-    switch (info->family) {
-        // https://en.wikipedia.org/wiki/List_of_AMD_CPU_microarchitectures
-      case 0x0F:
+  if (IsVendorByX86Info(info, CPU_FEATURES_VENDOR_AUTHENTIC_AMD)) {
+    switch (CPUID(info->family, info->model)) {
+      // https://en.wikichip.org/wiki/amd/cpuid
+      case CPUID(0xF, 0x04):
+      case CPUID(0xF, 0x05):
+      case CPUID(0xF, 0x07):
+      case CPUID(0xF, 0x08):
+      case CPUID(0xF, 0x0C):
+      case CPUID(0xF, 0x0E):
+      case CPUID(0xF, 0x0F):
+      case CPUID(0xF, 0x14):
+      case CPUID(0xF, 0x15):
+      case CPUID(0xF, 0x17):
+      case CPUID(0xF, 0x18):
+      case CPUID(0xF, 0x1B):
+      case CPUID(0xF, 0x1C):
+      case CPUID(0xF, 0x1F):
+      case CPUID(0xF, 0x21):
+      case CPUID(0xF, 0x23):
+      case CPUID(0xF, 0x24):
+      case CPUID(0xF, 0x25):
+      case CPUID(0xF, 0x27):
+      case CPUID(0xF, 0x2B):
+      case CPUID(0xF, 0x2C):
+      case CPUID(0xF, 0x2F):
+      case CPUID(0xF, 0x41):
+      case CPUID(0xF, 0x43):
+      case CPUID(0xF, 0x48):
+      case CPUID(0xF, 0x4B):
+      case CPUID(0xF, 0x4C):
+      case CPUID(0xF, 0x4F):
+      case CPUID(0xF, 0x5D):
+      case CPUID(0xF, 0x5F):
+      case CPUID(0xF, 0x68):
+      case CPUID(0xF, 0x6B):
+      case CPUID(0xF, 0x6F):
+      case CPUID(0xF, 0x7F):
+      case CPUID(0xF, 0xC1):
         return AMD_HAMMER;
-      case 0x10:
+      case CPUID(0x10, 0x02):
+      case CPUID(0x10, 0x04):
+      case CPUID(0x10, 0x05):
+      case CPUID(0x10, 0x06):
+      case CPUID(0x10, 0x08):
+      case CPUID(0x10, 0x09):
+      case CPUID(0x10, 0x0A):
         return AMD_K10;
-      case 0x14:
+      case CPUID(0x11, 0x03):
+        // http://developer.amd.com/wordpress/media/2012/10/41788.pdf
+        return AMD_K11;
+      case CPUID(0x12, 0x01):
+        // https://www.amd.com/system/files/TechDocs/44739_12h_Rev_Gd.pdf
+        return AMD_K12;
+      case CPUID(0x14, 0x00):
+      case CPUID(0x14, 0x01):
+      case CPUID(0x14, 0x02):
+        // https://www.amd.com/system/files/TechDocs/47534_14h_Mod_00h-0Fh_Rev_Guide.pdf
         return AMD_BOBCAT;
-      case 0x15:
+      case CPUID(0x15, 0x01):
+        // https://en.wikichip.org/wiki/amd/microarchitectures/bulldozer
         return AMD_BULLDOZER;
-      case 0x16:
+      case CPUID(0x15, 0x02):
+      case CPUID(0x15, 0x11):
+      case CPUID(0x15, 0x13):
+        // https://en.wikichip.org/wiki/amd/microarchitectures/piledriver
+        return AMD_PILEDRIVER;
+      case CPUID(0x15, 0x30):
+      case CPUID(0x15, 0x38):
+        // https://en.wikichip.org/wiki/amd/microarchitectures/steamroller
+        return AMD_STREAMROLLER;
+      case CPUID(0x15, 0x60):
+      case CPUID(0x15, 0x65):
+      case CPUID(0x15, 0x70):
+        // https://en.wikichip.org/wiki/amd/microarchitectures/excavator
+        return AMD_EXCAVATOR;
+      case CPUID(0x16, 0x00):
         return AMD_JAGUAR;
-      case 0x17:
+      case CPUID(0x16, 0x30):
+        return AMD_PUMA;
+      case CPUID(0x17, 0x01):
+      case CPUID(0x17, 0x11):
+      case CPUID(0x17, 0x18):
+      case CPUID(0x17, 0x20):
+        // https://en.wikichip.org/wiki/amd/microarchitectures/zen
         return AMD_ZEN;
+      case CPUID(0x17, 0x08):
+        // https://en.wikichip.org/wiki/amd/microarchitectures/zen%2B
+        return AMD_ZEN_PLUS;
+      case CPUID(0x17, 0x31):
+      case CPUID(0x17, 0x47):
+      case CPUID(0x17, 0x60):
+      case CPUID(0x17, 0x68):
+      case CPUID(0x17, 0x71):
+      case CPUID(0x17, 0x90):
+      case CPUID(0x17, 0x98):
+        // https://en.wikichip.org/wiki/amd/microarchitectures/zen_2
+        return AMD_ZEN2;
+      case CPUID(0x19, 0x01):
+      case CPUID(0x19, 0x21):
+      case CPUID(0x19, 0x30):
+      case CPUID(0x19, 0x40):
+      case CPUID(0x19, 0x50):
+        // https://en.wikichip.org/wiki/amd/microarchitectures/zen_3
+        return AMD_ZEN3;
       default:
         return X86_UNKNOWN;
+    }
+  }
+  if (IsVendorByX86Info(info, CPU_FEATURES_VENDOR_HYGON_GENUINE)) {
+    switch (CPUID(info->family, info->model)) {
+      case CPUID(0x18, 0x00):
+        return AMD_ZEN;
     }
   }
   return X86_UNKNOWN;
 }
 
-static void SetString(const uint32_t max_cpuid_ext_leaf, const uint32_t leaf_id,
-                      char* buffer) {
-  const Leaf leaf = SafeCpuId(max_cpuid_ext_leaf, leaf_id);
-  // We allow calling memcpy from SetString which is only called when requesting
-  // X86BrandString.
-  memcpy(buffer, &leaf, sizeof(Leaf));
-}
-
 void FillX86BrandString(char brand_string[49]) {
   const Leaf leaf_ext_0 = CpuId(0x80000000);
   const uint32_t max_cpuid_leaf_ext = leaf_ext_0.eax;
-  SetString(max_cpuid_leaf_ext, 0x80000002, brand_string);
-  SetString(max_cpuid_leaf_ext, 0x80000003, brand_string + 16);
-  SetString(max_cpuid_leaf_ext, 0x80000004, brand_string + 32);
-  brand_string[48] = '\0';
+  const Leaf leaves[3] = {
+      SafeCpuId(max_cpuid_leaf_ext, 0x80000002),
+      SafeCpuId(max_cpuid_leaf_ext, 0x80000003),
+      SafeCpuId(max_cpuid_leaf_ext, 0x80000004),
+  };
+  const size_t leaves_size = sizeof(leaves);
+#if __STDC_VERSION__ >= 201112L
+  _Static_assert(leaves_size == 48, "Leaves must be packed");
+#endif
+  CpuFeatures_StringView_CopyString(view((const char*)leaves, leaves_size),
+                                    brand_string, 49);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1380,259 +1711,13 @@ void FillX86BrandString(char brand_string[49]) {
 
 int GetX86FeaturesEnumValue(const X86Features* features,
                             X86FeaturesEnum value) {
-  switch (value) {
-    case X86_FPU:
-      return features->fpu;
-    case X86_TSC:
-      return features->tsc;
-    case X86_CX8:
-      return features->cx8;
-    case X86_CLFSH:
-      return features->clfsh;
-    case X86_MMX:
-      return features->mmx;
-    case X86_AES:
-      return features->aes;
-    case X86_ERMS:
-      return features->erms;
-    case X86_F16C:
-      return features->f16c;
-    case X86_FMA4:
-      return features->fma4;
-    case X86_FMA3:
-      return features->fma3;
-    case X86_VAES:
-      return features->vaes;
-    case X86_VPCLMULQDQ:
-      return features->vpclmulqdq;
-    case X86_BMI1:
-      return features->bmi1;
-    case X86_HLE:
-      return features->hle;
-    case X86_BMI2:
-      return features->bmi2;
-    case X86_RTM:
-      return features->rtm;
-    case X86_RDSEED:
-      return features->rdseed;
-    case X86_CLFLUSHOPT:
-      return features->clflushopt;
-    case X86_CLWB:
-      return features->clwb;
-    case X86_SSE:
-      return features->sse;
-    case X86_SSE2:
-      return features->sse2;
-    case X86_SSE3:
-      return features->sse3;
-    case X86_SSSE3:
-      return features->ssse3;
-    case X86_SSE4_1:
-      return features->sse4_1;
-    case X86_SSE4_2:
-      return features->sse4_2;
-    case X86_SSE4A:
-      return features->sse4a;
-    case X86_AVX:
-      return features->avx;
-    case X86_AVX2:
-      return features->avx2;
-    case X86_AVX512F:
-      return features->avx512f;
-    case X86_AVX512CD:
-      return features->avx512cd;
-    case X86_AVX512ER:
-      return features->avx512er;
-    case X86_AVX512PF:
-      return features->avx512pf;
-    case X86_AVX512BW:
-      return features->avx512bw;
-    case X86_AVX512DQ:
-      return features->avx512dq;
-    case X86_AVX512VL:
-      return features->avx512vl;
-    case X86_AVX512IFMA:
-      return features->avx512ifma;
-    case X86_AVX512VBMI:
-      return features->avx512vbmi;
-    case X86_AVX512VBMI2:
-      return features->avx512vbmi2;
-    case X86_AVX512VNNI:
-      return features->avx512vnni;
-    case X86_AVX512BITALG:
-      return features->avx512bitalg;
-    case X86_AVX512VPOPCNTDQ:
-      return features->avx512vpopcntdq;
-    case X86_AVX512_4VNNIW:
-      return features->avx512_4vnniw;
-    case X86_AVX512_4VBMI2:
-      return features->avx512_4vbmi2;
-    case X86_AVX512_SECOND_FMA:
-      return features->avx512_second_fma;
-    case X86_AVX512_4FMAPS:
-      return features->avx512_4fmaps;
-    case X86_AVX512_BF16:
-      return features->avx512_bf16;
-    case X86_AVX512_VP2INTERSECT:
-      return features->avx512_vp2intersect;
-    case X86_AMX_BF16:
-      return features->amx_bf16;
-    case X86_AMX_TILE:
-      return features->amx_tile;
-    case X86_AMX_INT8:
-      return features->amx_int8;
-    case X86_PCLMULQDQ:
-      return features->pclmulqdq;
-    case X86_SMX:
-      return features->smx;
-    case X86_SGX:
-      return features->sgx;
-    case X86_CX16:
-      return features->cx16;
-    case X86_SHA:
-      return features->sha;
-    case X86_POPCNT:
-      return features->popcnt;
-    case X86_MOVBE:
-      return features->movbe;
-    case X86_RDRND:
-      return features->rdrnd;
-    case X86_DCA:
-      return features->dca;
-    case X86_SS:
-      return features->ss;
-    case X86_LAST_:
-      break;
-  }
-  return false;
+  if (value >= X86_LAST_) return false;
+  return kGetters[value](features);
 }
 
 const char* GetX86FeaturesEnumName(X86FeaturesEnum value) {
-  switch (value) {
-    case X86_FPU:
-      return "fpu";
-    case X86_TSC:
-      return "tsc";
-    case X86_CX8:
-      return "cx8";
-    case X86_CLFSH:
-      return "clfsh";
-    case X86_MMX:
-      return "mmx";
-    case X86_AES:
-      return "aes";
-    case X86_ERMS:
-      return "erms";
-    case X86_F16C:
-      return "f16c";
-    case X86_FMA4:
-      return "fma4";
-    case X86_FMA3:
-      return "fma3";
-    case X86_VAES:
-      return "vaes";
-    case X86_VPCLMULQDQ:
-      return "vpclmulqdq";
-    case X86_BMI1:
-      return "bmi1";
-    case X86_HLE:
-      return "hle";
-    case X86_BMI2:
-      return "bmi2";
-    case X86_RTM:
-      return "rtm";
-    case X86_RDSEED:
-      return "rdseed";
-    case X86_CLFLUSHOPT:
-      return "clflushopt";
-    case X86_CLWB:
-      return "clwb";
-    case X86_SSE:
-      return "sse";
-    case X86_SSE2:
-      return "sse2";
-    case X86_SSE3:
-      return "sse3";
-    case X86_SSSE3:
-      return "ssse3";
-    case X86_SSE4_1:
-      return "sse4_1";
-    case X86_SSE4_2:
-      return "sse4_2";
-    case X86_SSE4A:
-      return "sse4a";
-    case X86_AVX:
-      return "avx";
-    case X86_AVX2:
-      return "avx2";
-    case X86_AVX512F:
-      return "avx512f";
-    case X86_AVX512CD:
-      return "avx512cd";
-    case X86_AVX512ER:
-      return "avx512er";
-    case X86_AVX512PF:
-      return "avx512pf";
-    case X86_AVX512BW:
-      return "avx512bw";
-    case X86_AVX512DQ:
-      return "avx512dq";
-    case X86_AVX512VL:
-      return "avx512vl";
-    case X86_AVX512IFMA:
-      return "avx512ifma";
-    case X86_AVX512VBMI:
-      return "avx512vbmi";
-    case X86_AVX512VBMI2:
-      return "avx512vbmi2";
-    case X86_AVX512VNNI:
-      return "avx512vnni";
-    case X86_AVX512BITALG:
-      return "avx512bitalg";
-    case X86_AVX512VPOPCNTDQ:
-      return "avx512vpopcntdq";
-    case X86_AVX512_4VNNIW:
-      return "avx512_4vnniw";
-    case X86_AVX512_4VBMI2:
-      return "avx512_4vbmi2";
-    case X86_AVX512_SECOND_FMA:
-      return "avx512_second_fma";
-    case X86_AVX512_4FMAPS:
-      return "avx512_4fmaps";
-    case X86_AVX512_BF16:
-      return "avx512_bf16";
-    case X86_AVX512_VP2INTERSECT:
-      return "avx512_vp2intersect";
-    case X86_AMX_BF16:
-      return "amx_bf16";
-    case X86_AMX_TILE:
-      return "amx_tile";
-    case X86_AMX_INT8:
-      return "amx_int8";
-    case X86_PCLMULQDQ:
-      return "pclmulqdq";
-    case X86_SMX:
-      return "smx";
-    case X86_SGX:
-      return "sgx";
-    case X86_CX16:
-      return "cx16";
-    case X86_SHA:
-      return "sha";
-    case X86_POPCNT:
-      return "popcnt";
-    case X86_MOVBE:
-      return "movbe";
-    case X86_RDRND:
-      return "rdrnd";
-    case X86_DCA:
-      return "dca";
-    case X86_SS:
-      return "ss";
-    case X86_LAST_:
-      break;
-  }
-  return "unknown_feature";
+  if (value >= X86_LAST_) return "unknown_feature";
+  return kCpuInfoFlags[value];
 }
 
 const char* GetX86MicroarchitectureName(X86Microarchitecture uarch) {
@@ -1681,14 +1766,32 @@ const char* GetX86MicroarchitectureName(X86Microarchitecture uarch) {
       return "AMD_HAMMER";
     case AMD_K10:
       return "AMD_K10";
+    case AMD_K11:
+      return "AMD_K11";
+    case AMD_K12:
+      return "AMD_K12";
     case AMD_BOBCAT:
       return "AMD_BOBCAT";
+    case AMD_PILEDRIVER:
+      return "AMD_PILEDRIVER";
+    case AMD_STREAMROLLER:
+      return "AMD_STREAMROLLER";
+    case AMD_EXCAVATOR:
+      return "AMD_EXCAVATOR";
     case AMD_BULLDOZER:
       return "AMD_BULLDOZER";
+    case AMD_PUMA:
+      return "AMD_PUMA";
     case AMD_JAGUAR:
       return "AMD_JAGUAR";
     case AMD_ZEN:
       return "AMD_ZEN";
+    case AMD_ZEN_PLUS:
+      return "AMD_ZEN_PLUS";
+    case AMD_ZEN2:
+      return "AMD_ZEN2";
+    case AMD_ZEN3:
+      return "AMD_ZEN3";
   }
   return "unknown microarchitecture";
 }

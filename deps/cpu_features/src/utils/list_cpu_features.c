@@ -1,4 +1,4 @@
-// Copyright 2017 Google Inc.
+// Copyright 2017 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@
 // the data accordingly.
 
 // We use a bump allocator to allocate strings and nodes of the tree,
-// Memory is not intented to be reclaimed.
+// Memory is not intended to be reclaimed.
 typedef struct {
   char* ptr;
   size_t size;
@@ -340,6 +340,7 @@ static Node* GetCacheTypeString(CacheType cache_type) {
     case CPU_FEATURE_CACHE_PREFETCH:
       return CreateConstantString("prefetch");
   }
+  UNREACHABLE();
 }
 
 static void AddCacheInfo(Node* root, const CacheInfo* cache_info) {

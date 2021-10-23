@@ -1,4 +1,4 @@
-// Copyright 2017 Google Inc.
+// Copyright 2017 Google LLC
 // Copyright 2020 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,11 @@
 #include "cpu_features_macros.h"
 
 CPU_FEATURES_START_CPP_NAMESPACE
+
+// CPUID Vendors
+#define CPU_FEATURES_VENDOR_GENUINE_INTEL "GenuineIntel"
+#define CPU_FEATURES_VENDOR_AUTHENTIC_AMD "AuthenticAMD"
+#define CPU_FEATURES_VENDOR_HYGON_GENUINE "HygonGenuine"
 
 // See https://en.wikipedia.org/wiki/CPUID for a list of x86 cpu features.
 // The field names are based on the short name provided in the wikipedia tables.
@@ -89,6 +94,7 @@ typedef struct {
 
   int dca : 1;
   int ss : 1;
+  int adx : 1;
   // Make sure to update X86FeaturesEnum below if you add a field here.
 } X86Features;
 
@@ -112,31 +118,40 @@ CacheInfo GetX86CacheInfo(void);
 
 typedef enum {
   X86_UNKNOWN,
-  INTEL_CORE,      // CORE
-  INTEL_PNR,       // PENRYN
-  INTEL_NHM,       // NEHALEM
-  INTEL_ATOM_BNL,  // BONNELL
-  INTEL_WSM,       // WESTMERE
-  INTEL_SNB,       // SANDYBRIDGE
-  INTEL_IVB,       // IVYBRIDGE
-  INTEL_ATOM_SMT,  // SILVERMONT
-  INTEL_HSW,       // HASWELL
-  INTEL_BDW,       // BROADWELL
-  INTEL_SKL,       // SKYLAKE
-  INTEL_ATOM_GMT,  // GOLDMONT
-  INTEL_KBL,       // KABY LAKE
-  INTEL_CFL,       // COFFEE LAKE
-  INTEL_WHL,       // WHISKEY LAKE
-  INTEL_CNL,       // CANNON LAKE
-  INTEL_ICL,       // ICE LAKE
-  INTEL_TGL,       // TIGER LAKE
-  INTEL_SPR,       // SAPPHIRE RAPIDS
-  AMD_HAMMER,      // K8
-  AMD_K10,         // K10
-  AMD_BOBCAT,      // K14
-  AMD_BULLDOZER,   // K15
-  AMD_JAGUAR,      // K16
-  AMD_ZEN,         // K17
+  INTEL_CORE,        // CORE
+  INTEL_PNR,         // PENRYN
+  INTEL_NHM,         // NEHALEM
+  INTEL_ATOM_BNL,    // BONNELL
+  INTEL_WSM,         // WESTMERE
+  INTEL_SNB,         // SANDYBRIDGE
+  INTEL_IVB,         // IVYBRIDGE
+  INTEL_ATOM_SMT,    // SILVERMONT
+  INTEL_HSW,         // HASWELL
+  INTEL_BDW,         // BROADWELL
+  INTEL_SKL,         // SKYLAKE
+  INTEL_ATOM_GMT,    // GOLDMONT
+  INTEL_KBL,         // KABY LAKE
+  INTEL_CFL,         // COFFEE LAKE
+  INTEL_WHL,         // WHISKEY LAKE
+  INTEL_CNL,         // CANNON LAKE
+  INTEL_ICL,         // ICE LAKE
+  INTEL_TGL,         // TIGER LAKE
+  INTEL_SPR,         // SAPPHIRE RAPIDS
+  AMD_HAMMER,        // K8  HAMMER
+  AMD_K10,           // K10
+  AMD_K11,           // K11
+  AMD_K12,           // K12
+  AMD_BOBCAT,        // K14 BOBCAT
+  AMD_PILEDRIVER,    // K15 PILEDRIVER
+  AMD_STREAMROLLER,  // K15 STREAMROLLER
+  AMD_EXCAVATOR,     // K15 EXCAVATOR
+  AMD_BULLDOZER,     // K15 BULLDOZER
+  AMD_JAGUAR,        // K16 JAGUAR
+  AMD_PUMA,          // K16 PUMA
+  AMD_ZEN,           // K17 ZEN
+  AMD_ZEN_PLUS,      // K17 ZEN+
+  AMD_ZEN2,          // K17 ZEN 2
+  AMD_ZEN3,          // K19 ZEN 3
 } X86Microarchitecture;
 
 // Returns the underlying microarchitecture by looking at X86Info's vendor,
@@ -213,6 +228,7 @@ typedef enum {
   X86_RDRND,
   X86_DCA,
   X86_SS,
+  X86_ADX,
   X86_LAST_,
 } X86FeaturesEnum;
 
