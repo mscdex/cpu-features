@@ -5,10 +5,11 @@
   "description": "A simple binding to Google's cpu_features library for obtaining information about installed CPU(s)",
   "main": "./lib/index",
   "dependencies": {
-    "nan": "^2.14.1"
+    "buildcheck": "0.0.3",
+    "nan": "^2.15.0"
   },
   "scripts": {
-    "install": "node-gyp rebuild",
+    "install": "node buildcheck.js > buildcheck.gypi && node-gyp rebuild",
     "test": "node test/test.js"
   },
   "engines": {
