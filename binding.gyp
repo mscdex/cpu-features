@@ -2,7 +2,7 @@
   'targets': [
     {
       'target_name': 'cpufeatures',
-      'dependencies': [ 'deps/cpu_features/cpu_features.gyp:cpufeatures' ],
+      'dependencies': [ 'deps/cpu_features/cpu_features.gyp:cpu_features' ],
       'include_dirs': [
         'src',
         "<!(node -e \"require('nan')\")",

@@ -1,7 +1,7 @@
 {
   'targets': [
     {
-      'target_name': 'cpufeatures',
+      'target_name': 'cpu_features',
       'type': 'static_library',
 
       'cflags': [ '-O3' ],
