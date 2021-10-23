@@ -42,7 +42,7 @@
             'src/cpuinfo_aarch64.c',
           ],
         }],
-        ['target_arch in "ia32 x64"', {
+        ['target_arch in "ia32 x32 x64"', {
           'sources': [
             'include/internal/cpuid_x86.h',
             'include/cpuinfo_x86.h',
