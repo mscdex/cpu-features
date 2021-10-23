@@ -8,9 +8,15 @@
     "buildcheck": "0.0.3",
     "nan": "^2.15.0"
   },
+  "devDependencies": {
+    "@mscdex/eslint-config": "^1.1.0",
+    "eslint": "^7.0.0"
+  },
   "scripts": {
     "install": "node buildcheck.js > buildcheck.gypi && node-gyp rebuild",
-    "test": "node test/test.js"
+    "test": "node test/test.js",
+    "lint": "eslint --cache --report-unused-disable-directives --ext=.js .eslintrc.js lib test",
+    "lint:fix": "npm run lint -- --fix"
   },
   "engines": {
     "node": ">=8.0.0"
