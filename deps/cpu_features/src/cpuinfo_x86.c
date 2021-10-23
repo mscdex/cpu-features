@@ -1700,7 +1700,7 @@ void FillX86BrandString(char brand_string[49]) {
   };
   const size_t leaves_size = sizeof(leaves);
 #if __STDC_VERSION__ >= 201112L
-  _Static_assert(leaves_size == 48, "Leaves must be packed");
+  _Static_assert(sizeof(leaves) == 48, "Leaves must be packed");
 #endif
   CpuFeatures_StringView_CopyString(view((const char*)leaves, leaves_size),
                                     brand_string, 49);
