@@ -8,7 +8,7 @@ A simple [node.js](https://nodejs.org) binding to [cpu_features](https://github.
 Requirements
 ============
 
-* [node.js](http://nodejs.org/) -- v8.0.0 or newer
+* [node.js](http://nodejs.org/) -- v10.0.0 or newer
 * An appropriate build environment -- see [node-gyp's documentation](https://github.com/nodejs/node-gyp/blob/master/README.md)
 
 
