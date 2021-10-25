@@ -110,6 +110,7 @@
 #else
 #error "Unsupported OS"
 #endif  // CPU_FEATURES_OS
+
 #include "internal/string_view.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1698,11 +1699,10 @@ void FillX86BrandString(char brand_string[49]) {
       SafeCpuId(max_cpuid_leaf_ext, 0x80000003),
       SafeCpuId(max_cpuid_leaf_ext, 0x80000004),
   };
-  const size_t leaves_size = sizeof(leaves);
 #if __STDC_VERSION__ >= 201112L
   _Static_assert(sizeof(leaves) == 48, "Leaves must be packed");
 #endif
-  CpuFeatures_StringView_CopyString(view((const char*)leaves, leaves_size),
+  CpuFeatures_StringView_CopyString(view((const char*)leaves, sizeof(leaves)),
                                     brand_string, 49);
 }
 

@@ -77,7 +77,7 @@
         ],
         'defines': [
           # Manually-tracked git revision
-          'CPU_FEATURES_VERSION_REV=cf589a28444eadf01fc94fd7afaf517be2cf9774',
+          'CPU_FEATURES_VERSION_REV=545b2e84ec68f4364be1e89309a1404575689226',
         ],
       },
     },
