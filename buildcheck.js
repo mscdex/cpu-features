@@ -1,22 +1,15 @@
 'use strict';
 
-if (process.platform === 'win32'
-    || ['ia32', 'x32', 'x64'].includes(process.arch)) {
-  return console.log('{}');
-}
-
 const BuildEnvironment = require('buildcheck');
 
 const be = new BuildEnvironment();
 
-const gyp = {
+let gyp = {
   defines: [],
   libraries: [],
   sources: [
-    'include/internal/hwcaps.h',
-    'include/internal/unix_features_aggregator.h',
-    'src/hwcaps.c',
-    'src/unix_features_aggregator.c',
+    'deps/cpu_features/include/internal/hwcaps.h',
+    'deps/cpu_features/src/hwcaps.c',
   ],
 };
 
@@ -28,5 +21,12 @@ if (be.checkDeclared('c', 'getauxval', { headers: ['sys/auxv.h'] }))
 // Add the things we detected
 gyp.defines.push(...be.defines(null, true));
 gyp.libraries.push(...be.libs());
+
+gyp = {
+  conditions: [
+    ['OS!="win" and target_arch not in "ia32 x32 x64"',
+     gyp],
+  ],
+};
 
 console.log(JSON.stringify(gyp, null, 2));
