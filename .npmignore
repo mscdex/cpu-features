@@ -1,0 +1,6 @@
+/build
+/deps
+/src
+/binding.gyp
+/buildcheck.gypi
+/node_modules

@@ -61,6 +61,13 @@
             'HAVE_SYSCTLBYNAME=1',
           ],
         }],
+
+        # TODO: remove this once gyp honors the CL env var
+        ['OS=="win"', {
+          'defines': [
+            '_WIN32_WINNT=0x0601',
+          ],
+        }],
       ],
       'defines': [
         'NDEBUG',
@@ -75,6 +82,14 @@
       'direct_dependent_settings': {
         'include_dirs': [
           'include',
+        ],
+        'conditions': [
+          # TODO: remove this once gyp honors the CL env var
+          ['OS=="win"', {
+            'defines': [
+              '_WIN32_WINNT=0x0601',
+            ],
+          }],
         ],
         'defines': [
           # Manually-tracked git revision

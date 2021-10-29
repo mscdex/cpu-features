@@ -1,0 +1,153 @@
+name: Build and Publish Binaries
+
+on:
+  push:
+    branches: [ binarytest ]
+
+jobs:
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+    outputs:
+      ver_tag: ${{ steps.get-ver-tag.outputs.ver_tag }}
+      release_id: ${{ steps.create-ver-release.outputs.release_id }}
+
+    steps:
+    - name: Get package version
+      id: get-ver-tag
+      shell: bash
+      run: |
+        VER_TAG="v$(curl -L ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/raw/${GITHUB_SHA}/package.json | jq -r '.version')"
+        test $? -eq 0 || exit 1
+        echo "::set-output name=ver_tag::${VER_TAG}"
+
+    - name: Create draft release
+      id: create-ver-release
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const { repo: { owner, repo } } = context;
+          const tag = ${{ toJson(steps.get-ver-tag.outputs.ver_tag) }};
+
+          try {
+            const existing = await github.rest.repos.getReleaseByTag({
+              owner,
+              repo,
+              tag,
+            });
+            await github.rest.repos.deleteRelease({
+              owner,
+              repo,
+              release_id: existing.data.id,
+            });
+          } catch (ex) {
+            if (!/not found/i.test(ex.message)) {
+              core.setFailed(ex.message);
+              process.exit(1);
+            }
+          }
+
+          const release = await github.rest.repos.createRelease({
+            owner,
+            repo,
+            name: tag,
+            tag_name: tag,
+            draft: true,
+            prerelease: false,
+          });
+          core.setOutput('release_id', release.data.id);
+
+  generate-binaries:
+    needs: create-release
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - { node: 16.x, os: ubuntu-latest,  arch: x64,   libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 16.x, os: ubuntu-latest,  arch: x64,   libc: musl, libcver: "1.1.16", kernel: "3.10" }
+          - { node: 16.x, os: ubuntu-latest,  arch: armv7, libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 16.x, os: ubuntu-latest,  arch: arm64, libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 16.x, os: macos-latest,   arch: x64,   macos: "10.11" }
+          - { node: 16.x, os: "windows-2019", arch: x64,   msvs: "2019", vc: "14.2", winos: "6.1", winosflag: "0x0601" }
+
+          - { node: 14.x, os: ubuntu-latest,  arch: x64,   libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 14.x, os: ubuntu-latest,  arch: x64,   libc: musl, libcver: "1.1.16", kernel: "3.10" }
+          - { node: 14.x, os: ubuntu-latest,  arch: armv7, libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 14.x, os: ubuntu-latest,  arch: arm64, libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 14.x, os: macos-latest,   arch: x64,   macos: "10.11" }
+          - { node: 14.x, os: "windows-2019", arch: x64,   msvs: "2019", vc: "14.2", winos: "6.1", winosflag: "0x0601" }
+
+          - { node: 12.x, os: ubuntu-latest,  arch: x64,   libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 12.x, os: ubuntu-latest,  arch: x64,   libc: musl, libcver: "1.1.16", kernel: "3.10" }
+          - { node: 12.x, os: ubuntu-latest,  arch: armv7, libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 12.x, os: ubuntu-latest,  arch: arm64, libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 12.x, os: macos-latest,   arch: x64,   macos: "10.11" }
+          - { node: 12.x, os: "windows-2019", arch: x64,   msvs: "2019", vc: "14.2", winos: "6.1", winosflag: "0x0601" }
+
+          - { node: 10.x, os: ubuntu-latest,  arch: x64,   libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 10.x, os: ubuntu-latest,  arch: x64,   libc: musl, libcver: "1.1.16", kernel: "3.10" }
+          - { node: 10.x, os: ubuntu-latest,  arch: armv7, libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 10.x, os: ubuntu-latest,  arch: arm64, libc: glibc, libcver: "2.17", kernel: "3.10" }
+          - { node: 10.x, os: macos-latest,   arch: x64,   macos: "10.11" }
+          - { node: 10.x, os: "windows-2019", arch: x64,   msvs: "2019", vc: "14.2", winos: "6.1", winosflag: "0x0601" }
+
+    name: Build for ${{ matrix.job.node }}-${{ matrix.job.os }}-${{ matrix.job.libc }}-${{ matrix.job.arch }}
+    runs-on: ${{ matrix.job.os }}
+
+    steps:
+    - name: Generate Binaries
+      uses: mscdex/build-addons@master
+      with:
+        releaseID: ${{ needs.create-release.outputs.release_id }}
+        buildOnlyPaths: 'deps,src,binding.gyp'
+        binaryType: application/gzip
+
+  finalize-release:
+    name: Finalize release
+    needs: [create-release, generate-binaries]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Publish release
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const { repo: { owner, repo } } = context;
+          const release_id =
+            ${{ toJson(needs.create-release.outputs.release_id) }};
+
+          await github.rest.repos.updateRelease({
+            owner,
+            repo,
+            release_id,
+            draft: false,
+          });
+
+  cleanup-on-failure:
+    runs-on: ubuntu-latest
+    needs: [create-release, generate-binaries, finalize-release]
+    name: Cleanup on Failure
+    if: failure()
+    steps:
+    - name: Cleanup
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const { repo: { owner, repo } } = context;
+          const release_id =
+            ${{ toJson(needs.create-release.outputs.release_id) }};
+
+          try {
+            if (typeof release_id === 'string' && release_id) {
+              await github.rest.repos.deleteRelease({
+                owner,
+                repo,
+                release_id,
+              });
+            }
+          } catch (ex) {
+            if (!/not found/i.test(ex.message)) {
+              core.setFailed(ex.message);
+              process.exit(1);
+            }
+          }
