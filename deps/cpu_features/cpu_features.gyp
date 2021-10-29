@@ -63,6 +63,7 @@
         }],
       ],
       'defines': [
+        'NDEBUG',
         'STACK_LINE_READER_BUFFER_SIZE=1024',
       ],
 
