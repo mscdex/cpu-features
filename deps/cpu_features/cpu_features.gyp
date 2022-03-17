@@ -14,6 +14,16 @@
         'include/cpu_features_cache_info.h',
         'include/cpu_features_macros.h',
 
+        # platform-specific cpu checking implementations
+        'src/impl_aarch64_linux_or_android.c',
+        'src/impl_arm_linux_or_android.c',
+        'src/impl_mips_linux_or_android.c',
+        'src/impl_ppc_linux.c',
+        'src/impl_x86_freebsd.c',
+        'src/impl_x86_linux_or_android.c',
+        'src/impl_x86_macos.c',
+        'src/impl_x86_windows.c',
+
         # utils
         'include/internal/bit_utils.h',
         'include/internal/filesystem.h',
@@ -27,32 +37,27 @@
         ['target_arch in "mips mipsel mips64 mips64el"', {
           'sources': [
             'include/cpuinfo_mips.h',
-            'src/cpuinfo_mips.c',
           ],
         }],
         ['target_arch=="arm"', {
           'sources': [
             'include/cpuinfo_arm.h',
-            'src/cpuinfo_arm.c',
           ],
         }],
         ['target_arch=="arm64"', {
           'sources': [
             'include/cpuinfo_aarch64.h',
-            'src/cpuinfo_aarch64.c',
           ],
         }],
         ['target_arch in "ia32 x32 x64"', {
           'sources': [
             'include/internal/cpuid_x86.h',
             'include/cpuinfo_x86.h',
-            'src/cpuinfo_x86.c',
           ],
         }],
         ['target_arch in "ppc ppc64"', {
           'sources': [
             'include/cpuinfo_ppc.h',
-            'src/cpuinfo_ppc.c',
           ],
         }],
 
@@ -78,7 +83,7 @@
         ],
         'defines': [
           # Manually-tracked git revision
-          'CPU_FEATURES_VERSION_REV=545b2e84ec68f4364be1e89309a1404575689226',
+          'CPU_FEATURES_VERSION_REV=8a494eb1e158ec2050e5f699a504fbc9b896a43b',
         ],
       },
     },

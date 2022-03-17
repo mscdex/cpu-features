@@ -1,6 +1,7 @@
 # Build folders
 build/
 cmake_build/
+build_cross/
 cmake-build-*/
 out/
 
@@ -10,3 +11,9 @@ out/
 .vscode/
 .vs/
 *.swp
+
+# Bazel artifacts
+**/bazel-*
+
+# Per-user bazelrc files
+user.bazelrc

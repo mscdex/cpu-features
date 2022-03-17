@@ -1,4 +1,14 @@
-# cpu_features [![Build Status](https://travis-ci.org/google/cpu_features.svg?branch=master)](https://travis-ci.org/google/cpu_features) [![Build status](https://ci.appveyor.com/api/projects/status/46d1owsj7n8dsylq/branch/master?svg=true)](https://ci.appveyor.com/project/gchatelet/cpu-features/branch/master)
+# cpu_features
+[![Linux Status][linux_svg]][linux_link]
+[![Macos Status][macos_svg]][macos_link]
+[![Windows Status][windows_svg]][windows_link]
+
+[linux_svg]: https://github.com/google/cpu_features/actions/workflows/amd64_linux.yml/badge.svg?branch=main
+[linux_link]: https://github.com/google/cpu_features/actions/workflows/amd64_linux.yml
+[macos_svg]: https://github.com/google/cpu_features/actions/workflows/amd64_macos.yml/badge.svg?branch=main
+[macos_link]: https://github.com/google/cpu_features/actions/workflows/amd64_macos.yml
+[windows_svg]: https://github.com/google/cpu_features/actions/workflows/amd64_windows.yml/badge.svg?branch=main
+[windows_link]: https://github.com/google/cpu_features/actions/workflows/amd64_windows.yml
 
 A cross-platform C library to retrieve CPU features (such as available
 instructions) at runtime.
@@ -169,7 +179,7 @@ flags           : aes,avx,cx16,smx,sse4_1,sse4_2,ssse3
 ## Android NDK's drop in replacement
 
 [cpu_features](https://github.com/google/cpu_features) is now officially
-supporting Android and offers a drop in replacement of for the NDK's [cpu-features.h](https://android.googlesource.com/platform/ndk/+/master/sources/android/cpufeatures/cpu-features.h)
+supporting Android and offers a drop in replacement of for the NDK's [cpu-features.h](https://android.googlesource.com/platform/ndk/+/main/sources/android/cpufeatures/cpu-features.h)
 , see [ndk_compat](ndk_compat) folder for details.
 
 <a name="license"></a>
@@ -184,21 +194,25 @@ See [LICENSE](LICENSE) for more information.
 Please check the [CMake build instructions](cmake/README.md).
 
 <a name="quickstart"></a>
-### Quickstart with `Ninja`
+### Quickstart
 
- - build `list_cpu_features`
+ - Run `list_cpu_features`
+```sh
+cmake -S. -Bbuild -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release -j
+./build/list_cpu_features --json
 ```
-    cmake -B/tmp/cpu_features -H. -GNinja -DCMAKE_BUILD_TYPE=Release
-    ninja -C/tmp/cpu_features
-    /tmp/cpu_features/list_cpu_features --json
-```
+
+_Note_: Use `--target ALL_BUILD` on the second line for `Visual Studio` and `XCode`.
 
  - run tests
+```sh
+cmake -S. -Bbuild -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --config Debug -j
+cmake --build build --config Debug --target test
 ```
-    cmake -B/tmp/cpu_features -H. -GNinja -DBUILD_TESTING=ON
-    ninja -C/tmp/cpu_features
-    ninja -C/tmp/cpu_features test
-```
+
+_Note_: Use `--target RUN_TESTS` on the last line for `Visual Studio` and `--target RUN_TEST` for `XCode`.
 
 <a name="bindings"></a>
 ## Community bindings

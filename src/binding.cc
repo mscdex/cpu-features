@@ -95,11 +95,9 @@ Local<Object> GenerateFlags(const FeatureType* features) {
 NAN_METHOD(GetCPUInfo) {
   const auto ret = Nan::New<Object>();
 #if defined(CPU_FEATURES_ARCH_X86)
-  char brand_string[49];
   const X86Info details = GetX86Info();
-  FillX86BrandString(brand_string);
   SET_STR("arch", "x86");
-  SET_STR("brand", brand_string);
+  SET_STR("brand", details.brand_string);
   SET_NUM("family", details.family);
   SET_NUM("model", details.model);
   SET_NUM("stepping", details.stepping);
