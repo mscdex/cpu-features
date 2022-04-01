@@ -113,7 +113,8 @@ NAN_METHOD(GetCPUInfo) {
   SET_NUM("part", details.part);
   SET_NUM("revision", details.revision);
   SET_VAL("flags", GenerateFlags(&details.features));
-#elif defined(CPU_FEATURES_ARCH_AARCH64)
+// M1 mac support is currently missing in cpu_features
+#elif defined(CPU_FEATURES_ARCH_AARCH64) && !defined(CPU_FEATURES_OS_MACOS)
   const Aarch64Info details = GetAarch64Info();
   SET_STR("arch", "aarch64");
   SET_NUM("implementer", details.implementer);
