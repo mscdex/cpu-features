@@ -5,7 +5,7 @@
   "description": "A simple binding to Google's cpu_features library for obtaining information about installed CPU(s)",
   "main": "./lib/index",
   "dependencies": {
-    "buildcheck": "0.0.3",
+    "buildcheck": "0.0.4",
     "nan": "^2.15.0"
   },
   "devDependencies": {
