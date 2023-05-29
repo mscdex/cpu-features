@@ -80,6 +80,9 @@ CPU_FEATURES_START_CPP_NAMESPACE
 #define AARCH64_HWCAP2_RNG (1UL << 16)
 #define AARCH64_HWCAP2_BTI (1UL << 17)
 #define AARCH64_HWCAP2_MTE (1UL << 18)
+#define AARCH64_HWCAP2_ECV (1UL << 19)
+#define AARCH64_HWCAP2_AFP (1UL << 20)
+#define AARCH64_HWCAP2_RPRES (1UL << 21)
 
 // http://elixir.free-electrons.com/linux/latest/source/arch/arm/include/uapi/asm/hwcap.h
 #define ARM_HWCAP_SWP (1UL << 0)
@@ -114,6 +117,13 @@ CPU_FEATURES_START_CPP_NAMESPACE
 #define MIPS_HWCAP_R6 (1UL << 0)
 #define MIPS_HWCAP_MSA (1UL << 1)
 #define MIPS_HWCAP_CRC32 (1UL << 2)
+#define MIPS_HWCAP_MIPS16 (1UL << 3)
+#define MIPS_HWCAP_MDMX (1UL << 4)
+#define MIPS_HWCAP_MIPS3D (1UL << 5)
+#define MIPS_HWCAP_SMARTMIPS (1UL << 6)
+#define MIPS_HWCAP_DSP (1UL << 7)
+#define MIPS_HWCAP_DSP2 (1UL << 8)
+#define MIPS_HWCAP_DSP3 (1UL << 9)
 
 // http://elixir.free-electrons.com/linux/latest/source/arch/powerpc/include/uapi/asm/cputable.h
 #ifndef _UAPI__ASM_POWERPC_CPUTABLE_H
@@ -165,6 +175,46 @@ CPU_FEATURES_START_CPP_NAMESPACE
 #define PPC_FEATURE2_SCV 0x00100000
 #define PPC_FEATURE2_HTM_NO_SUSPEND 0x00080000
 #endif
+
+// https://elixir.bootlin.com/linux/v6.0-rc6/source/arch/s390/include/asm/elf.h
+#define HWCAP_S390_ESAN3        1
+#define HWCAP_S390_ZARCH        2
+#define HWCAP_S390_STFLE        4
+#define HWCAP_S390_MSA          8
+#define HWCAP_S390_LDISP        16
+#define HWCAP_S390_EIMM         32
+#define HWCAP_S390_DFP          64
+#define HWCAP_S390_HPAGE        128
+#define HWCAP_S390_ETF3EH       256
+#define HWCAP_S390_HIGH_GPRS    512
+#define HWCAP_S390_TE           1024
+#define HWCAP_S390_VX           2048
+#define HWCAP_S390_VXRS         HWCAP_S390_VX
+#define HWCAP_S390_VXD          4096
+#define HWCAP_S390_VXRS_BCD     HWCAP_S390_VXD
+#define HWCAP_S390_VXE          8192
+#define HWCAP_S390_VXRS_EXT     HWCAP_S390_VXE
+#define HWCAP_S390_GS           16384
+#define HWCAP_S390_VXRS_EXT2    32768
+#define HWCAP_S390_VXRS_PDE     65536
+#define HWCAP_S390_SORT         131072
+#define HWCAP_S390_DFLT         262144
+#define HWCAP_S390_VXRS_PDE2    524288
+#define HWCAP_S390_NNPA         1048576
+#define HWCAP_S390_PCI_MIO      2097152
+#define HWCAP_S390_SIE          4194304
+
+// https://elixir.bootlin.com/linux/latest/source/arch/riscv/include/uapi/asm/hwcap.h
+#define RISCV_HWCAP_32 0x32
+#define RISCV_HWCAP_64 0x64
+#define RISCV_HWCAP_128 0x128
+#define RISCV_HWCAP_M (1UL << ('M' - 'A'))
+#define RISCV_HWCAP_A (1UL << ('A' - 'A'))
+#define RISCV_HWCAP_F (1UL << ('F' - 'A'))
+#define RISCV_HWCAP_D (1UL << ('D' - 'A'))
+#define RISCV_HWCAP_Q (1UL << ('Q' - 'A'))
+#define RISCV_HWCAP_C (1UL << ('C' - 'A'))
+#define RISCV_HWCAP_V (1UL << ('V' - 'A'))
 
 typedef struct {
   unsigned long hwcaps;

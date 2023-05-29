@@ -47,17 +47,29 @@
         ['target_arch=="arm64"', {
           'sources': [
             'include/cpuinfo_aarch64.h',
+            'include/internal/windows_utils.h',
           ],
         }],
         ['target_arch in "ia32 x32 x64"', {
           'sources': [
             'include/internal/cpuid_x86.h',
             'include/cpuinfo_x86.h',
+            'include/internal/windows_utils.h',
           ],
         }],
         ['target_arch in "ppc ppc64"', {
           'sources': [
             'include/cpuinfo_ppc.h',
+          ],
+        }],
+        ['target_arch in "s390x"', {
+          'sources': [
+            'include/cpuinfo_s390x.h',
+          ],
+        }],
+        ['target_arch in "riscv64"', {
+          'sources': [
+            'include/cpuinfo_riscv.h',
           ],
         }],
 
