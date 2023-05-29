@@ -1,6 +1,6 @@
 {
   "name": "cpu-features",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Brian White <mscdex@mscdex.net>",
   "description": "A simple binding to Google's cpu_features library for obtaining information about installed CPU(s)",
   "main": "./lib/index",
