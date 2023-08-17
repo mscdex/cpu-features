@@ -16,6 +16,7 @@
 
         # platform-specific cpu checking implementations
         'src/impl_aarch64_linux_or_android.c',
+        'src/impl_aarch64_macos_or_iphone.c',
         'src/impl_arm_linux_or_android.c',
         'src/impl_mips_linux_or_android.c',
         'src/impl_ppc_linux.c',
@@ -73,7 +74,7 @@
           ],
         }],
 
-        ['OS=="mac" and target_arch in "ia32 x32 x64"', {
+        ['OS=="mac" and target_arch in "ia32 x32 x64 arm64"', {
           'defines': [
             'HAVE_SYSCTLBYNAME=1',
           ],
