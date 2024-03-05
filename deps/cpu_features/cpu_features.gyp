@@ -17,6 +17,7 @@
         # platform-specific cpu checking implementations
         'src/impl_aarch64_linux_or_android.c',
         'src/impl_aarch64_macos_or_iphone.c',
+        'src/impl_aarch64_windows.c',
         'src/impl_arm_linux_or_android.c',
         'src/impl_mips_linux_or_android.c',
         'src/impl_ppc_linux.c',
