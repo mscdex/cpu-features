@@ -32,6 +32,8 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x, 20.x, 22.x]
+    env:
+      PIP_DISABLE_PIP_VERSION_CHECK: 1
     steps:
       - uses: actions/checkout@v4
         with:
