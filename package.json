@@ -6,7 +6,7 @@
   "main": "./lib/index",
   "dependencies": {
     "buildcheck": "~0.0.6",
-    "nan": "^2.19.0"
+    "nan": "^2.20.0"
   },
   "devDependencies": {
     "@mscdex/eslint-config": "^1.1.0",
