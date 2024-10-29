@@ -26,6 +26,13 @@
 # define FeatureType Aarch64Features
 # define FeatureEnumType Aarch64FeaturesEnum
 # define LastFeature AARCH64_LAST_
+#elif defined(CPU_FEATURES_ARCH_LOONGARCH)
+# include "cpuinfo_loongarch.h"
+# define GetFeatureName GetLoongArchFeaturesEnumName
+# define GetFeatureValue GetLoongArchFeaturesEnumValue
+# define FeatureType LoongArchFeatures
+# define FeatureEnumType LoongArchFeaturesEnum
+# define LastFeature LOONGARCH_LAST_
 #elif defined(CPU_FEATURES_ARCH_MIPS)
 # include "cpuinfo_mips.h"
 # define GetFeatureName GetMipsFeaturesEnumName
@@ -120,6 +127,10 @@ NAN_METHOD(GetCPUInfo) {
   SET_NUM("variant", details.variant);
   SET_NUM("part", details.part);
   SET_NUM("revision", details.revision);
+  SET_VAL("flags", GenerateFlags(&details.features));
+#elif defined(CPU_FEATURES_ARCH_LOONGARCH)
+  const LoongArchInfo details = GetLoongArchInfo();
+  SET_STR("arch", "loong64");
   SET_VAL("flags", GenerateFlags(&details.features));
 #elif defined(CPU_FEATURES_ARCH_MIPS)
   const MipsInfo details = GetMipsInfo();
