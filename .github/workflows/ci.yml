@@ -49,6 +49,9 @@ jobs:
         include:
           - os: macos-13
             node-version: 22.x
+        exclude:  # Fails on Python 3.13.
+          - os: macos-latest
+            node-version: 16.x
     runs-on: ${{ matrix.os }}
     env:
       PIP_DISABLE_PIP_VERSION_CHECK: 1
@@ -63,7 +66,7 @@ jobs:
       - name: Install Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: 3.13
+          python-version: '3.13'
       - name: Check Node.js version
         run: node -pe process.versions
       - name: Check npm version
