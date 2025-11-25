@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 14.x, 16.x, 18.x, 20.x, 22.x]
+        node-version: [10.x, 12.x, 14.x, 16.x, 18.x, 20.x, 22.x, 24.x]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,12 +36,40 @@ jobs:
         run: npm install
       - name: Run tests
         run: npm test
-  tests-macos:
+  tests-macos-intel:
+    runs-on: macos-15-intel
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 16.x, 18.x, 20.x, 22.x, 24.x]
+    env:
+      PIP_DISABLE_PIP_VERSION_CHECK: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Check Node.js version
+        run: node -pe process.versions
+      - name: Check npm version
+        run: npm -v
+      - name: Install module
+        run: npm install
+      - name: Run tests
+        run: npm test
+  tests-macos-arm:
     runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x, 20.x, 22.x]
+        node-version: [16.x, 18.x, 20.x, 22.x, 24.x]
     env:
       PIP_DISABLE_PIP_VERSION_CHECK: 1
     steps:
@@ -65,12 +93,18 @@ jobs:
       - name: Run tests
         run: npm test
   tests-windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 14.x, 16.x, 18.x, 20.x, 22.x]
+        node-version: [10.x, 12.x, 14.x, 16.x, 18.x, 20.x, 22.x, 24.x]
     steps:
+      - name: Install VS2019 (node <16.x)
+        if: ${{ contains(fromJSON('["10.x", "12.x", "14.x"]'), matrix.node-version) }}
+        run: choco install visualstudio2019buildtools
+      - name: Install VS2019 C++ (node<16.x)
+        if: ${{ contains(fromJSON('["10.x", "12.x", "14.x"]'), matrix.node-version) }}
+        run: choco install visualstudio2019-workload-vctools
       - uses: actions/checkout@v4
         with:
           persist-credentials: false

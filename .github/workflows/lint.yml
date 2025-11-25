@@ -6,7 +6,7 @@ on:
     branches: [ master ]
 
 env:
-  NODE_VERSION: 20.x
+  NODE_VERSION: 22.x
 
 jobs:
   lint-js:
@@ -22,6 +22,6 @@ jobs:
       - name: Check Node.js version
         run: node -pe process.versions
       - name: Install ESLint + ESLint configs/plugins
-        run: npm install
+        run: npm install --omit=prod --include=dev --ignore-scripts
       - name: Lint files
         run: npm run lint
