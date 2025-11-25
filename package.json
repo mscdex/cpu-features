@@ -5,8 +5,8 @@
   "description": "A simple binding to Google's cpu_features library for obtaining information about installed CPU(s)",
   "main": "./lib/index",
   "dependencies": {
-    "buildcheck": "~0.0.6",
-    "nan": "^2.22.1"
+    "buildcheck": "~0.0.7",
+    "nan": "^2.23.0"
   },
   "devDependencies": {
     "@mscdex/eslint-config": "^1.1.0",
