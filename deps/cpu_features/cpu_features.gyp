@@ -19,8 +19,10 @@
         'src/impl_aarch64_macos_or_iphone.c',
         'src/impl_aarch64_windows.c',
         'src/impl_arm_linux_or_android.c',
+        'src/impl_loongarch_linux.c',
         'src/impl_mips_linux_or_android.c',
         'src/impl_ppc_linux.c',
+        'src/impl_riscv_linux.c',
         'src/impl_x86_freebsd.c',
         'src/impl_x86_linux_or_android.c',
         'src/impl_x86_macos.c',
@@ -57,6 +59,11 @@
             'include/internal/cpuid_x86.h',
             'include/cpuinfo_x86.h',
             'include/internal/windows_utils.h',
+          ],
+        }],
+        ['target_arch in "loong64"', {
+          'sources': [
+            'include/cpuinfo_loongarch.h',
           ],
         }],
         ['target_arch in "ppc ppc64"', {
